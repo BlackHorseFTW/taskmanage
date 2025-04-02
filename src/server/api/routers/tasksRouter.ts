@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../db";
 import { sql } from "drizzle-orm";
 import { randomUUID } from "crypto"; // Node.js bu
-import { InferSelectModel } from "drizzle-orm";
+import type { InferSelectModel } from "drizzle-orm";
 
 type Task = InferSelectModel<typeof tasks>; // ✅ Infers the correct type
 
@@ -22,7 +22,7 @@ export const tasksRouter = createTRPCRouter({
       const newTask = {
         id: randomUUID(),
         title: input.title,
-        description: input.description || "",
+        description: input.description ?? "",
         status: "pending" as const,
         createdAt: new Date(),
       };
@@ -41,18 +41,19 @@ export const tasksRouter = createTRPCRouter({
     }).optional()
   )
   .query(async ({ input }) => {
-    const { limit = 10, offset = 0, status } = input || {};
+    const { limit = 10, offset = 0, status } = input ?? {};
 
-    let query = db.select().from(tasks); // ✅ Remove explicit field selection (optional)
-
-    if (status) {
-      query = query.where(eq(tasks.status, status));
-    }
-
-    const results: Task[] = await query.limit(limit).offset(offset);
+    // Build a query with conditions
+    const baseQuery = db.select().from(tasks);
+    
+    const filteredQuery = status 
+      ? baseQuery.where(eq(tasks.status, status))
+      : baseQuery;
+    
+    const results: Task[] = await filteredQuery.limit(limit).offset(offset);
 
     const countResult = await db.select({ count: sql<number>`count(*)` }).from(tasks);
-    const total = countResult[0]?.count || 0;
+    const total = countResult[0]?.count ?? 0;
 
     return {
       tasks: results,

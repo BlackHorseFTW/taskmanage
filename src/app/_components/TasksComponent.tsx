@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { api } from '../../utils/api';
+import { api } from '../../trpc/react';
 
 // Define types for our task
 type TaskStatus = 'pending' | 'in-progress' | 'completed';
@@ -27,17 +27,12 @@ export default function TasksComponent() {
   }, [filter]);
   
   // Query to fetch tasks with optional filter
-  const { data, isLoading, error } = api.tasks.getTasks.useQuery(queryInput, {
-    onError: (err) => {
-      console.error("Task query error:", err);
-    },
-    retry: false // Disable auto-retry during development
-  });
+  const { data, isLoading, error } = api.tasks.getTasks.useQuery(queryInput);
   
   // Log errors to console for debugging
   useEffect(() => {
     if (error) {
-      console.error("Task fetch error details:", error);
+      console.error("Task query error:", error);
     }
   }, [error]);
   
@@ -81,19 +76,19 @@ export default function TasksComponent() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
     
-    createTaskMutation.mutate({
+    void createTaskMutation.mutate({
       title: newTaskTitle,
       description: newTaskDescription || undefined
     });
   };
   
   const handleUpdateStatus = (id: string, status: TaskStatus) => {
-    updateTaskMutation.mutate({ id, status });
+    void updateTaskMutation.mutate({ id, status });
   };
   
   const handleDeleteTask = (id: string) => {
     if (confirm('Are you sure you want to delete this task?')) {
-      deleteTaskMutation.mutate(id);
+      void deleteTaskMutation.mutate(id);
     }
   };
   
@@ -151,10 +146,10 @@ export default function TasksComponent() {
           
           <button
             type="submit"
-            disabled={createTaskMutation.isLoading}
+            disabled={createTaskMutation.isPending}
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
           >
-            {createTaskMutation.isLoading ? 'Adding...' : 'Add Task'}
+            {createTaskMutation.isPending ? 'Adding...' : 'Add Task'}
           </button>
         </form>
       </div>
@@ -200,7 +195,7 @@ export default function TasksComponent() {
           <div className="text-center py-4 text-gray-500">No tasks found</div>
         ) : (
           <ul className="divide-y divide-gray-200">
-            {data.tasks.map((task: any) => (
+            {data.tasks.map((task: Task) => (
               <li key={task.id} className="py-4">
                 <div className="flex flex-col gap-2">
                   <div className="flex justify-between">

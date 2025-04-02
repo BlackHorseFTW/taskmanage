@@ -1,7 +1,7 @@
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { NextRequest } from "next/server"; // ✅ Correct import for App Router
+import type { NextRequest } from "next/server"; // ✅ Correct import for App Router
 import { db } from "../db";
 
 // Define your context

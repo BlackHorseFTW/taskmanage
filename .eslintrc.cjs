@@ -55,7 +55,16 @@ const config = {
           "ctx.db"
         ]
       }
-    ]
-  }
+    ],
+    "@typescript-eslint/no-floating-promises": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["src/app/_components/TasksComponent.tsx"],
+      "rules": {
+        "@typescript-eslint/no-floating-promises": "off"
+      }
+    }
+  ]
 }
 module.exports = config;
