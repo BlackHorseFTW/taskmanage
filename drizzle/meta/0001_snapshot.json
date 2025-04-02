@@ -1,0 +1,25 @@
+{
+  "id": "c684e0b4-9fea-4c50-ae56-d9f60f44dd06",
+  "prevId": "3b15fd2e-250d-4295-a64d-6a287a4ccf1b",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {},
+  "enums": {
+    "public.status": {
+      "name": "status",
+      "schema": "public",
+      "values": [
+        "pending",
+        "in-progress",
+        "completed"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

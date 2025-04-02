@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1741723344444,
+      "tag": "0000_cool_gravity",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1741757403576,
+      "tag": "0001_reflective_squadron_sinister",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741757678533,
+      "tag": "0002_clear_naoko",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1743507368149,
+      "tag": "0003_modern_wallop",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1743507777315,
+      "tag": "0004_flimsy_richard_fisk",
+      "breakpoints": true
+    }
+  ]
+}
