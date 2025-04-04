@@ -8,6 +8,7 @@
     "build:prod": "powershell -c \"$env:ESLINT_CONFIG_PATH='.eslintrc-build.json'; $env:NODE_ENV='production'; next build\"",
     "build:win": "set ESLINT_CONFIG_PATH=.eslintrc-build.json && next build",
     "build:win:prod": "set ESLINT_CONFIG_PATH=.eslintrc-build.json && set NODE_ENV=production && next build",
+    "vercel-build": "ESLINT_CONFIG_PATH=.eslintrc-build.json NEXT_DISABLE_ESLINT=1 next build",
     "check": "next lint && tsc --noEmit",
     "db:check": "tsx check-db.ts",
     "db:generate": "drizzle-kit generate",

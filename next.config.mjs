@@ -19,8 +19,8 @@ const nextConfig = {
     // Skip middleware for static generation
     skipMiddlewareUrlNormalize: true
   },
-  // Disable static exports since we're using dynamic server features
-  output: "standalone",
+  // Output standalone for better compatibility with Vercel
+  output: process.env.VERCEL ? undefined : "standalone",
   // Make all pages dynamic since we're using cookies
   staticPageGenerationTimeout: 90,
   compiler: {
