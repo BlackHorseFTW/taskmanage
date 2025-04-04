@@ -8,5 +8,6 @@ export default {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["taskmanage_*"],
+  verbose: true,
+  strict: true,
 } satisfies Config;

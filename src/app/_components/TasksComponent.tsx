@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { api } from '../../trpc/react';
+import { api } from '../../utils/api';
 
 // Define types for our task
 type TaskStatus = 'pending' | 'in-progress' | 'completed';
@@ -26,49 +26,38 @@ export default function TasksComponent() {
       : { limit: 20 };
   }, [filter]);
   
-  // Query to fetch tasks with optional filter
-  const { data, isLoading, error } = api.tasks.getTasks.useQuery(queryInput);
+  // Query to fetch tasks with optional filter using tRPC v11 style
+  const tasksQuery = api.tasks.getTasks.useQuery(queryInput);
+  const { data, isLoading, error } = tasksQuery;
   
   // Log errors to console for debugging
   useEffect(() => {
     if (error) {
-      console.error("Task query error:", error);
+      console.error("Task fetch error details:", error);
     }
   }, [error]);
   
   const utils = api.useContext();
   
-  // Mutations
+  // Mutations with tRPC v11 style
   const createTaskMutation = api.tasks.createTask.useMutation({
-    onSuccess: () => {
-      utils.tasks.getTasks.invalidate();
+    onSuccess: async () => {
+      await utils.tasks.getTasks.invalidate();
       // Clear form fields
       setNewTaskTitle('');
       setNewTaskDescription('');
-    },
-    onError: (err) => {
-      console.error("Create task error:", err);
-      alert("Failed to create task");
     }
   });
   
   const updateTaskMutation = api.tasks.updateTask.useMutation({
-    onSuccess: () => {
-      utils.tasks.getTasks.invalidate();
-    },
-    onError: (err) => {
-      console.error("Update task error:", err);
-      alert("Failed to update task");
+    onSuccess: async () => {
+      await utils.tasks.getTasks.invalidate();
     }
   });
   
   const deleteTaskMutation = api.tasks.deleteTask.useMutation({
-    onSuccess: () => {
-      utils.tasks.getTasks.invalidate();
-    },
-    onError: (err) => {
-      console.error("Delete task error:", err);
-      alert("Failed to delete task");
+    onSuccess: async () => {
+      await utils.tasks.getTasks.invalidate();
     }
   });
   
@@ -76,19 +65,19 @@ export default function TasksComponent() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
     
-    void createTaskMutation.mutate({
+    createTaskMutation.mutate({
       title: newTaskTitle,
       description: newTaskDescription || undefined
     });
   };
   
   const handleUpdateStatus = (id: string, status: TaskStatus) => {
-    void updateTaskMutation.mutate({ id, status });
+    updateTaskMutation.mutate({ id, status });
   };
   
   const handleDeleteTask = (id: string) => {
     if (confirm('Are you sure you want to delete this task?')) {
-      void deleteTaskMutation.mutate(id);
+      deleteTaskMutation.mutate(id);
     }
   };
   
